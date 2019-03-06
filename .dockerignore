@@ -1,0 +1,10 @@
+.git/
+.gitignore
+.dockerignore
+dr
+docker/Dockerfile
+LICENSE
+README.md
+
+.idea/
+.vscode/

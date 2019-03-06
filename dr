@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+CONTAINER_TAG=bindings-threading-tests
+
+echo "Building testing container..."
+docker build --quiet -t ${CONTAINER_TAG} --file docker/Dockerfile .
+docker run -it --rm ${CONTAINER_TAG} $@
