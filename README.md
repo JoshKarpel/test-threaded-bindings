@@ -101,3 +101,20 @@ Total for all users: 5 jobs; 0 completed, 0 removed, 0 idle, 0 running, 5 held, 
 ```
 
 Note that matching batch name.
+
+### `ephemeral_schedd`
+
+When doing `with htcondor.Schedd().transaction() as txn:`, the `Schedd` object
+has no references to it, and is immediately freed. If this happens before the
+transaction finishes, it explodes.
+
+Ticket: https://htcondor-wiki.cs.wisc.edu/index.cgi/tktview?tn=6721
+
+```
+Traceback (most recent call last):
+  File "/home/test/tests/ephemeral_schedd.py", line 22, in <module>
+    test_ephemeral_schedd()
+  File "/home/test/tests/ephemeral_schedd.py", line 15, in test_ephemeral_schedd
+    result = submit.queue(txn, 1)
+RuntimeError: Job queue attempt without active transaction
+```
