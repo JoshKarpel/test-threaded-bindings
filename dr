@@ -2,7 +2,7 @@
 
 set -e
 
-CONTAINER_TAG=bindings-threading-tests
+CONTAINER_TAG=bindings-tests
 
 echo "Building testing container..."
 docker build --quiet -t ${CONTAINER_TAG} --file docker/Dockerfile .
