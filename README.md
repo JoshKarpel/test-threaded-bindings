@@ -1,6 +1,6 @@
-# test-threaded-bindings
+# python-bindings-crashes
 
-Testing the multi-threadability of the HTCondor Python bindings.
+Testing the HTCondor Python bindings.
 
 ## Setup
 
