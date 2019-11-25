@@ -6,19 +6,13 @@ Testing the HTCondor Python bindings.
 
 `git clone https://github.com/htcondor/python-bindings-crashes`
 
-If you don't have a local HTCondor install, use the `dr` script to run something in Docker.
-Running `dr` without any arguments will land you in a `bash` shell.
-See the Dockerfile in `docker/Dockerfile` for possible build arguments (to change Python or HTCondor versions).
-If you need to use build args you won't be able to use the `dr` script (unless you edit it).
-Sorry!
+If you don't have a local HTCondor install, use the `dr.sh` script (or `dr.cmd` on Windows) to start up a Docker container.
 
 Some of the test scripts take arguments, often the number of jobs to submit.
-
 Example calls:
 ```
-dr
-dr python tests/single_threaded_submit.py 10
-dr python tests/separate_transactions_raw.py 100
+python3 tests/single_threaded_submit.py 10
+python3 tests/separate_transactions_raw.py 100
 ```
 
 ## Test Results
