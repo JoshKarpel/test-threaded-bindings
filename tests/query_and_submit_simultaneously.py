@@ -7,13 +7,17 @@ import htcondor
 import time
 import sys
 import threading
+import faulthandler
 
 import utils
 
 
 def run_test(num_query_threads = 1):
     submit_thread = threading.Thread(target = submit_forever, name = 'submit'.ljust(10))
-    query_threads = [threading.Thread(target = query_forever, name = 'query-{}'.format(i).ljust(10)) for i in range(num_query_threads)]
+    query_threads = [
+        threading.Thread(target = query_forever, name = 'query-{}'.format(i).ljust(10))
+        for i in range(num_query_threads)
+    ]
 
     submit_thread.start()
     for qt in query_threads:
@@ -26,7 +30,6 @@ def submit_forever():
         schedd = htcondor.Schedd()
         log("about to get submit transaction")
         with schedd.transaction() as txn:
-            time.sleep(1)
             log("got submit transaction")
             result = sub.queue(txn, 1)
             log("submitted and got result", result)
@@ -46,6 +49,7 @@ def log(*args):
 
 
 if __name__ == '__main__':
+    faulthandler.enable(file = sys.stderr, all_threads = True)
     num_query_threads = int(sys.argv[1])
 
     htcondor.enable_debug()
