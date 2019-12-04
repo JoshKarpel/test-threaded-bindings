@@ -60,7 +60,13 @@ def add_lock_to_context_manager(method):
         # log("waiting for context lock {} for method {}".format(LOCK, ORIGINAL_NAMES[method]))
         with LOCK:
             log("acquired context lock {}".format(LOCK))
-            yield method(*args, **kwargs)
+            try:
+                x = method(*args, **kwargs)
+                x.__enter__()
+                yield x
+            finally:
+                log("in finally of context lock")
+                x.__exit__(*sys.exc_info())
             log("about to release context lock {}".format(LOCK))
         # log("released context lock {} for method {}".format(LOCK, ORIGINAL_NAMES[method]))
 
@@ -84,22 +90,24 @@ def run_test(num_query_threads = 1):
 
 def submit_forever():
     while True:
+        time.sleep(.01)
         sub = utils.short_sleep_submit()
         schedd = htcondor.Schedd()
-        # log("about to get submit transaction")
+        log("about to get submit transaction")
         with schedd.transaction() as txn:
-            # log("got submit transaction")
+            log("got submit transaction")
             result = sub.queue(txn, 1)
-            # log("submitted and got result", result)
-        # log("exited submit transaction block")
+            log("submitted and got result", result)
+        log("exited submit transaction block")
 
 
 def query_forever():
     while True:
+        time.sleep(.01)
         schedd = htcondor.Schedd()
-        # log("about to query")
+        log("about to query")
         results = schedd.query()
-        # log("query result length: {}".format(len(results)))
+        log("query result length: {}".format(len(results)))
 
 
 def log(*args):
