@@ -19,7 +19,7 @@ def do_submit(txn, submit):
 
 
 def test_multi_threaded_submit_raw_shared(num_jobs):
-    submit = utils.dummy_submit()
+    submit = utils.held_submit()
 
     schedd = htcondor.Schedd()
     with schedd.transaction() as txn:

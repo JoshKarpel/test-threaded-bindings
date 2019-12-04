@@ -9,7 +9,7 @@ import utils
 
 
 def test_ephemeral_schedd():
-    submit = utils.dummy_submit()
+    submit = utils.held_submit()
 
     with htcondor.Schedd().transaction() as txn:
         result = submit.queue(txn, 1)

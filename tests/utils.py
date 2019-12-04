@@ -3,10 +3,17 @@ import os
 import htcondor
 
 
-def dummy_submit():
+def held_submit():
     return htcondor.Submit({
         'executable': 'fubar',
         'hold': 'true',
+    })
+
+
+def short_sleep_submit():
+    return htcondor.Submit({
+        'executable': '/bin/sleep',
+        'arguments': '1',
     })
 
 

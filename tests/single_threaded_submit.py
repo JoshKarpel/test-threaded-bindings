@@ -9,7 +9,7 @@ import utils
 
 
 def test_single_threaded_submit(num_jobs):
-    submit = utils.dummy_submit()
+    submit = utils.held_submit()
 
     schedd = htcondor.Schedd()
     with schedd.transaction() as txn:

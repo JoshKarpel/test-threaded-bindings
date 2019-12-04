@@ -18,7 +18,7 @@ def do_submit(txn, submit):
 
 
 def test_separate_transactions_raw(num_jobs):
-    submit = utils.dummy_submit()
+    submit = utils.held_submit()
 
     schedd = htcondor.Schedd()
 
