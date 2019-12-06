@@ -30,6 +30,7 @@ def submit_forever():
         schedd = htcondor.Schedd()
         log("about to get submit transaction")
         with schedd.transaction() as txn:
+            time.sleep(.1)
             log("got submit transaction")
             result = sub.queue(txn, 1)
             log("submitted and got result", result)

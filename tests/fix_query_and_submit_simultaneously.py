@@ -16,6 +16,7 @@ import utils
 
 ORIGINAL_NAMES = {}
 
+
 def add_locks(schedd):
     # print(schedd.__dict__)
     for name, method in schedd.__dict__.items():
@@ -55,22 +56,30 @@ def add_lock(method):
 
 def add_lock_to_context_manager(method):
     @functools.wraps(method)
-    @contextlib.contextmanager
     def wrapper(*args, **kwargs):
-        # log("waiting for context lock {} for method {}".format(LOCK, ORIGINAL_NAMES[method]))
-        with LOCK:
-            log("acquired context lock {}".format(LOCK))
-            try:
-                x = method(*args, **kwargs)
-                x.__enter__()
-                yield x
-            finally:
-                log("in finally of context lock")
-                x.__exit__(*sys.exc_info())
-            log("about to release context lock {}".format(LOCK))
-        # log("released context lock {} for method {}".format(LOCK, ORIGINAL_NAMES[method]))
+        return LockedContext(method(*args, **kwargs))
 
     return wrapper
+
+
+class LockedContext:
+    def __init__(self, cm):
+        log("context lock __init__")
+        self.cm = cm
+
+    def __enter__(self):
+        log("context lock __enter__")
+        LOCK.acquire()
+        log("acquired context lock {}".format(LOCK))
+        return self.cm.__enter__()
+
+    def __exit__(self, *args, **kwargs):
+        log("context lock __exit__")
+        try:
+            return self.cm.__exit__(*args, **kwargs)
+        finally:
+            log("about to release context lock {}".format(LOCK))
+            LOCK.release()
 
 
 htcondor.Schedd = add_locks(htcondor.Schedd)
@@ -90,12 +99,13 @@ def run_test(num_query_threads = 1):
 
 def submit_forever():
     while True:
-        time.sleep(.01)
+        time.sleep(.1)
         sub = utils.short_sleep_submit()
         schedd = htcondor.Schedd()
         log("about to get submit transaction")
         with schedd.transaction() as txn:
             log("got submit transaction")
+            # result = sub.queue_with_itemdata(txn, 1, iter(["1", "2"]))
             result = sub.queue(txn, 1)
             log("submitted and got result", result)
         log("exited submit transaction block")
@@ -103,7 +113,7 @@ def submit_forever():
 
 def query_forever():
     while True:
-        time.sleep(.01)
+        time.sleep(.1)
         schedd = htcondor.Schedd()
         log("about to query")
         results = schedd.query()
@@ -123,4 +133,3 @@ if __name__ == '__main__':
         print(k, v)
     htcondor.enable_debug()
     run_test(num_query_threads = num_query_threads)
-
