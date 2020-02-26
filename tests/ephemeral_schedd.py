@@ -13,10 +13,10 @@ def test_ephemeral_schedd():
 
     with htcondor.Schedd().transaction() as txn:
         result = submit.queue(txn, 1)
-        print('submit result', result)
+        print("submit result", result)
 
     utils.condor_q()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_ephemeral_schedd()

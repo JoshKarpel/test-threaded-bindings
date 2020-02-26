@@ -31,7 +31,8 @@ RUN wget https://research.cs.wisc.edu/htcondor/yum/RPM-GPG-KEY-HTCondor \
  && yum install -y condor-all python3-condor \
  && yum clean all
 
-RUN yum install -y python3-pip sudo git vim nano less top htop where which man tmux strace gdb \
+RUN yum install -y python3-pip python-dev python3-dev sudo git vim nano less top htop where which man tmux strace gdb \
+ && debuginfo-install -y python boost169-python boost169-python2 boost169-python3 python2-condor python3-condor zlib \
  && yum clean all
 
 ENV USER=tester

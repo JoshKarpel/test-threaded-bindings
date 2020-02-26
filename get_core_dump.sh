@@ -1,0 +1,1 @@
+gdb -ex r --args $@
